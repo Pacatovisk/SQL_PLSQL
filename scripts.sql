@@ -488,3 +488,38 @@ FROM employees e
    INNER JOIN locations   l ON d.location_id = l.location_id
 ORDER BY e.employee_id;
 
+
+
+/*
+    OUTER JOIN
+    
+    Retornando Registros que não correspondem a condição de JOIN utilizando OUTER join
+
+    LEFT OUTER JOIN
+
+    Um join entre duas tabelas que retorna as linhas que resultam do INNER join e também 
+    as linhas que não coincidem a partir da tabela LEFT é chamado de LEFT OUTER Join
+*/
+
+-- LEFT OUTER JOIN
+SELECT e.first_name, e.last_name, d.department_id, d.department_name
+FROM employees e LEFT OUTER JOIN departments d
+    ON (e.department_id = d.department_id)
+ORDER BY d.department_id;
+
+-- RIGHT OUTER JOIN
+SELECT e.first_name, e.last_name, d.department_id, d.department_name
+FROM employees e RIGHT OUTER JOIN departments d
+    ON (e.department_id = d.department_id)
+ORDER BY d.department_id;
+
+-- FULL OUTER JOIN
+SELECT e.first_name, e.last_name, d.department_id, d.department_name
+FROM employees e FULL OUTER JOIN departments d
+    ON (e.department_id = d.department_id)
+ORDER BY d.department_id;
+
+
+
+
+

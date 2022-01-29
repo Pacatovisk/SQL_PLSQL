@@ -236,3 +236,48 @@ SELECT * FROM employees WHERE employee_id = &employee_id;
 DEFINE employee_id
 --remover a variável
 UNDEFINE employee_id
+
+
+DESCRIBE employees;
+
+-- Utillizando funções de grupo
+
+-- AVG retorna a média  e SUM retorna a soma
+SELECT AVG(salary), SUM(salary)
+FROM employees;
+
+-- As funções MIN e MAX podem ser utilizadas para dados numéricos, caracteres e datas
+SELECT MIN(hire_date), MAX(hire_date)
+FROM employees;
+
+SELECT MIN(salary), MAX(salary)
+FROM employees;
+
+-- COUNT(*) retorna o número de linhas
+SELECT COUNT(*)
+FROM employees;
+
+-- COUNT(expr) retorna o número de linhas com valores não nulos para expressão
+SELECT COUNT(commission_pct), COUNT(*)
+FROM employees;
+
+SELECT COUNT(NVL(commission_pct,0)), COUNT(*)
+FROM employees;
+
+
+-- COUNT(DISTINCT expr) retorna o número de linhas distintas e valores não nulos para expressão
+SELECT COUNT(DISTINCT department_id)
+FROM employees;
+
+-- COUNT(DISTINCT expr) retorna o número de linhas distintas e valores não nulos para expressão
+SELECT COUNT(department_id)
+FROM employees;
+
+-- FUNÇÕES DE GRUPO e VALORES NULOS
+-- Funções de grupo ignoram valores NULOS
+
+SELECT AVG(commission_pct)
+FROM employees;
+
+SELECT AVG(NVL(commission_pct, 0)) 
+FROM employees;

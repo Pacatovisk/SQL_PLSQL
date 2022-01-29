@@ -520,6 +520,91 @@ FROM employees e FULL OUTER JOIN departments d
 ORDER BY d.department_id;
 
 
+/* 
+    Gerando um produto cartesiano utilizando CROSS JOIN
+    
+    - A Cláusula CROSS JOIN produz um produto cartesiano entre duas tabelas
+
+*/
+
+SELECT last_name, department_name
+FROM employees 
+    CROSS JOIN departments;
+
+/* JOIN UTILIZANDO SINTAXE ORACLE */
+
+-- Equijoin utilizando sintaxe Oracle
+SELECT e.employee_id, e.last_name, e.department_id, d.department_id, d.location_id
+FROM employees e, departments d
+WHERE (e.department_id = d.department_id)
+ORDER BY e.department_id;
+
+
+-- Incluindo condições adicionais a condição de join utilizando AND
+SELECT e.employee_id, j.job_title, d.department_name, l.city, l.state_province, l.country_id
+FROM employees e,
+        jobs j,
+        departments d,
+        locations l 
+WHERE   (e.job_id = j.job_id )              AND
+        (e.department_id = d.department_id) AND
+        (d.location_id = l.location_id) AND
+        (e.salary >= 1000)
+ORDER BY e.employee_id;
+
+
+-- NOnequiJoin utilizando Sintaxe Oracle
+SELECT e.employee_id, e.salary, j.grade_level, j.lowest_sal, j.highest_sal
+FROM employees e, job_grades j
+WHERE NVL(e.salary,0) BETWEEN j.lowest_sal AND j.highest_sal
+ORDER BY e.salary;
+
+
+-- Outer Join utilizando Sintaxe Oracle
+
+/*
+    SELECT tabela1.coluna, tabela2.coluna
+    FROM tabela1, tabela2
+    WHERE tabela1.coluna(+) = tabela2.coluna;
+    
+    
+    SELECT tabela1.coluna, tabela2.coluna
+    FROM tabela1, tabela2
+    WHERE tabela1.coluna = tabela2.coluna(+);
+    
+*/
+
+
+SELECT e.first_name, e.last_name, d.department_id, d.department_name
+FROM employees e,
+    departments d
+WHERE e.department_id = d.department_id(+)
+ORDER BY e.department_id;
+
+SELECT e.first_name, e.last_name, d.department_id, d.department_name
+FROM employees e,
+    departments d
+WHERE e.department_id(+) = d.department_id
+ORDER BY e.department_id;
+
+
+-- Outer Join e SELF Join utilizando a sintaxe ORACLE
+SELECT empregado.employee_id "Id empregado", empregado.last_name "Sobrenome empregado",
+       gerente.employee_id "Id gerente", gerente.last_name "Sobrenome gerente"
+FROM employees empregado, 
+     employees gerente
+WHERE (empregado.manager_id = gerente.employee_id(+))
+ORDER BY empregado.employee_id;
+
+
+-- Produto Cartesiano no Oracle (ERRADO)
+SELECT e.employee_id, e.first_name, e.first_name, j.job_id, j.job_title
+FROM employees e, jobs j;
+
+-- Produto Cartesiano no Oracle (CERTO)
+SELECT e.employee_id, e.first_name, e.first_name, j.job_id, j.job_title
+FROM employees e, jobs j
+WHERE e.job_id = j.job_id;
 
 
 

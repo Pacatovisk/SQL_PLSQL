@@ -474,3 +474,17 @@ FROM employees e JOIN job_grades j
 ORDER BY e.salary;
 
 
+-- INNER JOIN
+
+/*
+    No SQL ANSI:1999, o join entre duas tabelas que retorna somente as linhas onde a condição de ligação coincidem é chamado INNER join
+    (a palavra INNER é opcional)
+*/
+
+SELECT e.employee_id, j.job_title, d.department_name, l.city, l.state_province, l.country_id
+FROM employees e
+   INNER JOIN jobs        j ON e.job_id = j.job_id
+   INNER JOIN departments d ON e.department_id = d.department_id
+   INNER JOIN locations   l ON d.location_id = l.location_id
+ORDER BY e.employee_id;
+

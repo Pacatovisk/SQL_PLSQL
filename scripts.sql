@@ -352,3 +352,97 @@ ORDER BY SUM(salary);
 SELECT MAX(AVG(salary))
 FROM employees e
 GROUP BY e.department_id;
+
+
+-- Exibindo dados a partir de multiplas tabelas 
+
+--  Utilizando prefixos  coluna com nomes de tabelas
+
+-- Utilizando prefixos coluna com nomes de tabela
+
+SELECT employees.employee_id, employees.last_name,
+        employees.department_id, departments.department_name
+FROM employees JOIN departments
+    ON (employees.department_id = departments.department_id);
+    
+-- Qualificando nomes de colunas ambíguos
+
+-- Utilizando ALIAS DE TABELA
+
+SELECT e.employee_id, e.last_name, e.department_id, d.department_name
+FROM   employees e JOIN departments d
+ON    (e.department_id = d.department_id);
+
+/*
+    Criando Natural Joins
+    
+   º A cláusula NATURAL JOIN é baseada em todas as colunas nas duas tabelas
+    que possuem e o mesmo nome.
+    
+    º Seleciona as linhas a partir das duas tabelas que possuem valores iguais
+    em todas colunas envolvidas na cláusula
+    
+    º Se as colunas possuem o mesmo nome, mas possuem diferentes tipos de dados,
+    um erro será retornado
+    
+    
+*/
+
+-- Utilizando Natural Joins
+SELECT department_id, department_name, location_id, city
+FROM   departments
+NATURAL JOIN locations;
+
+-- Utilizando USING
+SELECT e.employee_id, e.last_name, department_id, d.location_id
+FROM employees e
+    JOIN departments d USING (department_id);
+    
+-- Join com a Cláusula ON
+
+/*  
+    - Utilize a cláusula ON para especificar condições ou especificar colunas para o JOIN
+    
+    - A condição de JOIN é separada de outras condições de pesquisa
+    
+    - A cláusula ON torna o código mais simples e fácil de entender.
+    
+    SELECT tabela.coluna, tabela.coluna
+    FROM tabela
+        JOIN tabela ON (condição_join)
+*/
+
+SELECT e.employee_id, e.last_name, e.department_id, d.location_id
+FROM employees e JOIN departments d 
+ON (e.department_id = d.department_id);
+
+-- Joins utilizando várias tabelas com a Cláusuça ON
+SELECT e.employee_id, j.job_title, d.department_name, l.city, l.state_province, l.country_id
+FROM employees e
+    JOIN jobs        j ON e.job_id = j.job_id
+    JOIN departments d ON e.department_id = d.department_id
+    JOIN locations   l ON d.location_id = l.location_id
+ORDER BY e.employee_id;
+
+/*
+    Incluindo condições adicionais a condição de JOIN na cláusula WHERE
+    
+*/
+
+SELECT e.employee_id, e.last_name, e.salary, e.department_id, d.department_name
+FROM employees e JOIN departments d
+ON  (e.department_id = d.department_id)
+WHERE (e.salary BEtWEEN 10000 AND 15000);
+
+-- Incluindo condições adicionais a condição de JOIN utilizando AND
+SELECT e.employee_id, e.last_name, e.salary, e.department_id, d.department_name
+FROM employees e JOIN departments d
+ON  (e.department_id = d.department_id)
+AND (e.salary BEtWEEN 10000 AND 15000);
+
+-- SELF Join utilizando a Cláusula ON
+SELECT empregado.employee_id "Id empregado", empregado.last_name "Sobrenome empregado",
+       gerente.employee_id "Id gerente", gerente.last_name "Sobrenome gerente"
+FROM employees empregado JOIN employees gerente
+ON (empregado.manager_id = gerente.employee_id)
+ORDER BY empregado.employee_id;

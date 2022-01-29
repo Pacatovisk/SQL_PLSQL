@@ -281,3 +281,74 @@ FROM employees;
 
 SELECT AVG(NVL(commission_pct, 0)) 
 FROM employees;
+
+
+-- Criando Grupos utilizando a cláusula GROUP BY
+
+/*
+    SELECT coluna, funcao_grupo(coluna)
+    FROM tabela
+    [WHERE condição]
+    [GROUP BY expressão_group_by]
+    [HAVING condição_grupos]
+    [ORDER BY coluna];
+    
+    Sequência lógica
+    
+    1- WHERE - Selecionar as linhas a serem recuperadas
+    
+    2- GROUP BY - Formar os grupos
+    
+    3- HAVING - Selecionar os grupos a serem recuperados
+    
+    4 - Exibir colunas ou expressões do SELECT ordenando pelo critério definido no ORDER BY
+    
+    Se o comando SELECT utiliza GRUPOS, então todas as colunas ou expressões na lista da cláusula SELECT 
+    que não estão em uma função de grupo devem estar na cláusula GROUP BY
+    
+    Consultas incorretqaqs utilizando funções de grupo
+    
+    - Você não pode utilizar a cláusula WHERE para restringir grupos
+    - Você não pode utiliazr funções de Grupo na cláusula WHERE
+    
+    Obs: Utilize a cláusula HAVING para restringir grupos
+    
+*/
+
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id
+ORDER BY department_id;
+
+SELECT department_id, job_id, SUM(salary)
+FROM employees
+GROUP BY department_id, job_id
+ORDER BY department_id, job_id;
+
+-- FORMA INCORRETA
+SELECT department_id, MAX(salary)
+FROM employees
+WHERE MAX(salary) > 10000
+GROUP BY department_id;
+
+-- FORMA CERTA PARA FILTRAR UMA FUNÇÃO DE GRUPO
+SELECT department_id, MAX(salary)
+FROM employees
+GROUP BY department_id
+HAVING MAX(salary) > 10000
+ORDER BY department_id desc;
+
+SELECT job_id, SUM(salary) TOTAL
+FROM employees
+WHERE job_id <> 'SA_REP'
+GROUP BY job_id
+HAVING  SUM(salary) > 10000
+ORDER BY SUM(salary);
+
+
+-- Aninhando funções de grupo
+-- Exibindo a maior média de salário por departamento
+
+SELECT MAX(AVG(salary))
+FROM employees e
+GROUP BY e.department_id;

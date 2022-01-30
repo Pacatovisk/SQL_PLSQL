@@ -607,4 +607,79 @@ FROM employees e, jobs j
 WHERE e.job_id = j.job_id;
 
 
+/*
+   Utilizando SUB-CONSULTAS
+   
+    Objetivos
+    
+    - Enteder Sub-consultas
+    - bEntender os tipos de problemas que Sub-Consultas podem resolver
+    - Conhecer os tipos de Sub-Consultas
+    - Escrever Sub-consultas tipo single-row e tipo multiple-row
+    - Escrever Sub-Consultas multiple-columnn
+    - Escrever Sub-Consultas na Cláusula FROM
+    
+    Utilizando uma Sub-Consulta para resolver um problema
+    
+    Quais empregados possuem o salário maior do que a média de salários
+    
+    SELECT select_list
+    FROM tabela
+    WHERE expressão operador
+        (SELECT select_list
+        FROM tabela);
+        
+    Comportamento da execução de Sub-Consultas
+    
+    - A SUB-CONSULTA é executada antes da consulta principal
+    
+    - O resultado da Sub-Consulta é utilizado pela consulta principal
+    
+    
+    DIRETRIZES
+    
+     -A sub-consulta deve ficar entre parênteses
+     
+    - A sub-consulta deve ficar a direita do operador de comparação para melhor entendimento e compreensão do código, entretanto,
+        a sub-consulta pode aparecer em qualquer lado do operador.
+    
+    - Utilize operadores single-row com sub-consultas single-row
+    
+    - Utilize operadores multiple-row com sub-consultas multiple-row
+    
+    SUB-CONSULTAS SINGLE-ROW
+    
+    - Devem retornar somente uma linha
+    - Devem utilizar operadores de comparação single-row (=, >, <, >=, <=)
+*/
 
+
+--   Quais empregados possuem o salário maior do que a média de salários?
+SELECT e.first_name, e.last_name, e.job_id, e.salary FROM employees e 
+WHERE e.salary > 
+                (SELECT AVG(NVL(salary, 0))
+                  FROM employees);
+
+
+-- Utilizando sub-consultas na cláusula HAVING
+SELECT e1.department_id, MAX(e1.salary) FROM employees e1
+GROUP BY e1.department_id
+HAVING MAX(salary) < (SELECT AVG(e2.salary)
+                        FROM employees e2);
+
+-- Erros utilizando sub-consultas single-row
+
+SELECT employee_id, first_name, last_name
+FROM employees
+WHERE salary = 
+                (SELECT AVG(NVL(salary,0))
+                FROM employees);
+                --GROUP BY department_id);
+
+-- O que ocorre quando a sub-consulta retorna nenhuma linha?
+-- R: A consulta vai retornar null
+SELECT employee_id
+FROM employees
+WHERE last_name = (SELECT last_name
+                    FROM employees
+                    WHERE last_name = 'Suzuki');

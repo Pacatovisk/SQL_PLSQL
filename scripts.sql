@@ -744,3 +744,64 @@ WHERE emp.employee_id NOT IN (SELECT mgr.manager_id
                           FROM employees mgr 
                           WHERE mgr.manager_id is not null);
 
+-- UTILIZANDO OPERADORES EXISTS e NOT EXISTS
+
+SELECT d.department_id, d.department_name
+FROM departments d
+WHERE EXISTS (SELECT e.department_id
+                FROM employees e
+                WHERE d.department_id = e.department_id);
+
+
+SELECT d.department_id, d.department_name
+FROM departments d
+WHERE NOT EXISTS (SELECT e.department_id
+                FROM employees e
+                WHERE d.department_id = e.department_id);
+
+
+-- SUB-CONSULTA CORRELACIONADA
+
+-- Utilizando Sub-consultas correlacionadas
+
+SELECT e1.employee_id, e1.first_name, e1.last_name, e1.department_id, e1.salary
+FROM employees e1
+WHERE e1.salary >= (SELECT  TRUNC(AVG(NVL(salary,0)),0)
+                    FROM employees e2
+                    WHERE e1.department_id = e2.department_id);
+
+SELECT TRUNC(AVG(NVL(salary,0)),0)
+FROM employees e2 
+WHERE e2.department_id = 60;
+
+
+-- Utilizando Sub- consultas multiple-column podem retornar mais de uma coluna
+
+/*
+    SINTAXE:
+    
+    SELECT t1.coluna1, t1.coluna2, t1.coluna3
+    FROM tabela1 t1
+    WHERE (t1.coluna1, t1.coluna2) IN
+            (SELECT t2.coluna1, t2.coluna2)
+            FROM tabela2 t2
+            WHERE condição...)
+
+*/
+
+SELECT e1.employee_id, e1.first_name, e1.job_id, e1.salary
+FROM employees e1
+WHERE (e1.job_id, e1.salary) IN (SELECT e2.job_id, MAX(e2.salary)
+                                FROM employees e2
+                                GROUP BY e2.job_id);
+
+
+-- SUB-CONSULTA NA CLÁUSULA FROM
+
+SELECT empregados.employee_id, empregados.first_name, empregados.last_name, empregados.job_id, 
+empregados.salary, ROUND(max_salary_job.max_salary, 2) MAX_SALARY, empregados.salary - ROUND(max_salary_job.max_salary,2) DIFERENÇA
+FROM employees empregados
+    LEFT JOIN (SELECT e2.job_id, MAX(e2.salary) max_salary
+                FROM employees e2
+                GROUP BY e2.job_id) max_salary_job
+       ON empregados.job_id = max_salary_job.job_id;

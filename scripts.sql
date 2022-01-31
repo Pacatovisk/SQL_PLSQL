@@ -683,3 +683,64 @@ FROM employees
 WHERE last_name = (SELECT last_name
                     FROM employees
                     WHERE last_name = 'Suzuki');
+                    
+/*
+    SUB-CONSULTAS MULTIPLE-ROW
+    
+    - Possibilitam que a sub-consulta retorne mais do que uma linha
+    - Utiliza operadores de comparação multiple-row  (IN - ANY - ALL)
+    
+*/
+
+-- Sub-consultas multiple-row com operador IN
+SELECT employee_id, first_name, last_name
+FROM employees
+WHERE salary IN 
+                (SELECT AVG(NVL(salary,0))
+                FROM employees
+                GROUP BY department_id);
+                
+-- Sub-consultas multiple-row com operador NOT IN
+SELECT employee_id, first_name, last_name
+FROM employees
+WHERE salary NOT IN 
+                (SELECT AVG(NVL(salary,0))
+                FROM employees
+                GROUP BY department_id);
+                
+-- Sub-consultas multiple-row com operador ANY
+SELECT employee_id, first_name, last_name, job_id, salary
+FROM employees
+WHERE salary < ANY 
+                (SELECT salary
+                FROM employees
+                WHERE job_id = 'IT_PROG');  
+                
+-- Sub-consultas multiple-row com operador ALL
+SELECT employee_id, first_name, last_name, job_id, salary
+FROM employees
+WHERE salary < ALL 
+                (SELECT salary
+                FROM employees
+                WHERE job_id = 'IT_PROG');      
+                
+                
+-- Cuidados com  valores Nulos em uma sub-consulta com operador IN
+-- Sem problemas quando a subconsulta retorna valores NULL
+
+SELECT emp.employee_id, emp.last_name
+FROM employees emp
+WHERE emp.employee_id IN (SELECT mgr.manager_id
+                          FROM employees mgr);
+
+
+-- Cuidados com valores nulos em uma sub-consulta com operador NOT IN
+-- Quando a subconsulta retorna valores NULL a consulta principal não retorna nenhuma linha
+
+
+SELECT emp.employee_id, emp.last_name
+FROM employees emp
+WHERE emp.employee_id NOT IN (SELECT mgr.manager_id
+                          FROM employees mgr 
+                          WHERE mgr.manager_id is not null);
+
